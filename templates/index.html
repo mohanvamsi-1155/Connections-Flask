@@ -1,28 +1,20 @@
 {% extends "base.html" %} {% block content %}
-<h2>Pneunomia Detector</h2>
+<h2>Plot your Connections</h2>
 <div>
     <form id="upload-file" method="post" enctype="multipart/form-data">
-        <label for="nameField" class="name-label">
+        <label for="textbox" class="name-label">
             Name
         </label>
-        <input type="text" name="username" id="textbox" placeholder="Enter your name">
-        <label for="imageUpload" class="upload-label">
+        <input type="text" name="username" id="textbox" placeholder="Enter your name" />
+        <label for="fileUpload" class="upload-label">
             Select the CSV file
         </label>
-        <input type="file" name="file" id="imageUpload" accept=".png, .jpg, .jpeg">
+        <input type="file" name="file" id="fileUpload" accept=".csv" />
     </form>
-    <div class="image-section" style="display:none;">
-        <div class="img-preview">
-            <div id="imagePreview">
-            </div>
+         <div> 
+            <button type="button" class="btn btn-primary btn-lg " id="btn-generate">Draw the Graph</button>
         </div>
-        <div>
-            <button type="button" class="btn btn-primary btn-lg " id="btn-predict">Check</button>
-        </div>
-    </div>
     <div class="loader" style="display:none;"></div>
-    <h3 id="result">
-        <span> </span>
-    </h3>
+    <img id="result" src='' alt="Result Image"/>
 </div>
 {% endblock %}

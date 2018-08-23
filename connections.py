@@ -1,5 +1,6 @@
 from __future__ import division, print_function
 import os
+import io
 import sys
 import re
 import numpy as np
@@ -10,7 +11,7 @@ from matplotlib import pyplot as plt
 import networkx as nx
 import pandas as pd
 app = Flask(__name__)
-
+print("UI started. Connect at http://127.0.0.1:5000")
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -18,7 +19,9 @@ def index():
 def generate():
     if request.method == 'POST':
         f = request.files['file']
-        data = pd.read_csv('calllogs.csv')
+        print(request.name)
+        data = pd.read_csv(f)
+        img = io.BytesIO()
         print(data.info())
         '''
         <class 'pandas.core.frame.DataFrame'>
@@ -53,12 +56,9 @@ def generate():
             nodes.append((name,index_list[i]))
         g.add_edges_from(nodes)
         nx.draw(g, nodelist=data_for_nx.keys(), node_size=[v * 100 for v in data_for_nx.values()],with_labels=True)
-        plt.show()
-        basepath = os.path.dirname(__file__)
-        file_path = os.path.join(
-            basepath, 'uploads', secure_filename(f.filename))
-        f.save(file_path)
-
+        filename = "Graph.png"
+        plt.savefig(filename, format="PNG")
+        return filename
     return None
 if __name__ == '__main__':
     http_server = WSGIServer(('', 5000), app)
