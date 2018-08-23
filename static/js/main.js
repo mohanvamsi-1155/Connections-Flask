@@ -22,7 +22,6 @@ $(document).ready(function () {
             success: function (data) {
                 // Get and display the result
                 $('.loader').hide();
-                $('#result').fadeIn(600);
                 console.log(data);
                 document.getElementById('result').src = data;
                 console.log('Success!');

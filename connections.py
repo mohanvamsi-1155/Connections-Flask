@@ -44,11 +44,8 @@ def generate():
         index_list = data['Name'].value_counts().index.tolist()
         counts = data['Name'].value_counts().tolist()
         data_for_nx = dict()
-        colors = []
         for i in range(len(index_list)):
             data_for_nx[index_list[i]] = counts[i]
-        print(colors)
-        print(counts)
         g = nx.Graph()
         g.add_node(name)
         nodes = []
