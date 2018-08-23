@@ -1,6 +1,5 @@
 from __future__ import division, print_function
 import os
-import io
 import sys
 import re
 import numpy as np
@@ -19,10 +18,7 @@ def index():
 def generate():
     if request.method == 'POST':
         f = request.files['file']
-        print(request.name)
         data = pd.read_csv(f)
-        img = io.BytesIO()
-        print(data.info())
         '''
         <class 'pandas.core.frame.DataFrame'>
         RangeIndex: 484 entries, 0 to 483
@@ -38,7 +34,6 @@ def generate():
         dtypes: int64(3), object(5)
         memory usage: 30.3+ KB
         '''
-        print(request)
         name="Srikar"
         data.Name.fillna(data.Number, inplace=True)
         index_list = data['Name'].value_counts().index.tolist()
