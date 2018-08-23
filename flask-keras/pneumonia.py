@@ -3,47 +3,62 @@ import os
 import sys
 import re
 import numpy as np
-from keras.applications.imagenet_utils import preprocess_input, decode_predictions
-from keras.models import load_model
-from keras.preprocessing import image
 from flask import Flask, redirect, url_for, request, render_template
 from werkzeug.utils import secure_filename
 from gevent.pywsgi import WSGIServer
+from matplotlib import pyplot as plt
+import networkx as nx
+import pandas as pd
 app = Flask(__name__)
-MODEL_PATH = 'models/final4.h5'
-model = load_model(MODEL_PATH)
-model._make_predict_function()
-print('Model loaded. Start serving...')
-# from keras.applications.resnet50 import ResNet50
-# model = ResNet50(weights='imagenet')
-# print('Model loaded. Check http://127.0.0.1:5000/')
-def model_predict(img_path, model):
-    img = image.load_img(img_path, target_size=(150, 150))
-    x = image.img_to_array(img)
-    x = np.expand_dims(x, axis=0)
-    x = preprocess_input(x, mode='caffe')
-    preds = model.predict(x)
-    return preds
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
-@app.route('/predict', methods=['GET', 'POST'])
-def upload():
+@app.route('/generate', methods=['GET', 'POST'])
+def generate():
     if request.method == 'POST':
         f = request.files['file']
+        data = pd.read_csv('calllogs.csv')
+        print(data.info())
+        '''
+        <class 'pandas.core.frame.DataFrame'>
+        RangeIndex: 484 entries, 0 to 483
+        Data columns (total 8 columns):
+        SI No                484 non-null int64
+        Name                 369 non-null object
+        Type                 331 non-null object
+        Number               484 non-null int64
+        Call Type            484 non-null object
+        Time                 484 non-null object
+        Duration             484 non-null object
+        Duration(Seconds)    484 non-null int64
+        dtypes: int64(3), object(5)
+        memory usage: 30.3+ KB
+        '''
+        print(request)
+        name="Srikar"
+        data.Name.fillna(data.Number, inplace=True)
+        index_list = data['Name'].value_counts().index.tolist()
+        counts = data['Name'].value_counts().tolist()
+        data_for_nx = dict()
+        colors = []
+        for i in range(len(index_list)):
+            data_for_nx[index_list[i]] = counts[i]
+        print(colors)
+        print(counts)
+        g = nx.Graph()
+        g.add_node(name)
+        nodes = []
+        for i in range(len(index_list)):
+            nodes.append((name,index_list[i]))
+        g.add_edges_from(nodes)
+        nx.draw(g, nodelist=data_for_nx.keys(), node_size=[v * 100 for v in data_for_nx.values()],with_labels=True)
+        plt.show()
         basepath = os.path.dirname(__file__)
         file_path = os.path.join(
             basepath, 'uploads', secure_filename(f.filename))
         f.save(file_path)
-        preds = model_predict(file_path, model)
-        # pred_class = decode_predictions(preds, top=1)
-        # result = str(pred_class[0][0][1])
-        # return result
-        
-        if(str(preds)[2]=='1'):
-            return "Pneunomia"
-        else:
-            return "No Pneunomia"
+
     return None
 if __name__ == '__main__':
     http_server = WSGIServer(('', 5000), app)
