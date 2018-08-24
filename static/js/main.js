@@ -25,7 +25,9 @@ $(document).ready(function () {
                 console.log(data);
                 document.getElementById('result').src = data;
                 console.log('Success!');
+                $('#btn-generate').show();
             },
         });
+        
     });
 });
