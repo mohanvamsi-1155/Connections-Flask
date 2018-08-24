@@ -1,1 +1,1 @@
-# Connections Script implemented by Flask
+# Connections Script implemented with Flask Interface
